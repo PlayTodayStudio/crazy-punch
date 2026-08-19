@@ -78,11 +78,11 @@
             justify-content: center;
         }
         
-        /* Наковальня - увеличенная и сдвинутая левее для правильной соосности */
+        /* Наковальня сдвинута влево сильнее */
         #anvil {
             position: absolute;
             bottom: 0px;
-            left: 45%;
+            left: 35%;
             transform: translateX(-50%);
             width: 260px;
             height: 160px;
@@ -91,11 +91,11 @@
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет - подогнан по новой высоте наковальни и отцентрирован на площадке */
+        /* Предмет сдвинут влево, но меньше, чтобы лежать по центру площадки */
         #target-item {
             position: absolute;
             bottom: 82px;
-            left: 42%;
+            left: 38%;
             transform: translateX(-50%);
             width: 100px;
             height: 100px;
@@ -121,9 +121,9 @@
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар - ложится ровно на предмет */
+        /* Удар скорректирован, чтобы дотягиваться до новой позиции предмета */
         #hammer.hit {
-            transform: rotate(-85deg) translate(-35px, -15px);
+            transform: rotate(-85deg) translate(-42px, -15px);
         }
 
         /* Промах */
@@ -133,10 +133,11 @@
             transition: transform 0.25s ease-in, opacity 0.2s ease-out;
         }
 
+        /* Свечение подогнано под центр композиции */
         #glow {
             position: absolute;
             bottom: 15px;
-            left: 45%;
+            left: 38%;
             transform: translateX(-50%);
             width: 240px;
             height: 50px;
@@ -216,9 +217,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=16" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=16" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=16" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=17" alt="Наковальня">
+            <img id="target-item" src="images/egg.png?v=17" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=17" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -237,8 +238,8 @@
         }
 
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=16", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=16", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
+            { name: "Куриное яйцо", src: "images/egg.png?v=17", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
+            { name: "Спелый томат", src: "images/tomato.png?v=17", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
         ];
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -295,7 +296,7 @@
                 p.style.height = `${size}px`;
                 
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = '42%'; 
+                p.style.left = '38%'; // Центр взрыва теперь совпадает с предметом
                 p.style.bottom = '110px';
                 stage.appendChild(p);
 
