@@ -71,18 +71,18 @@
         /* Сцена наковальни и молота */
         #anvil-stage {
             position: relative;
-            width: 100%;
+            width: 280px;
             height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
-        /* Наковальня по центру */
+        /* Наковальня смещена левее под угол площадки */
         #anvil {
             position: absolute;
-            bottom: 12px;
-            left: 50%;
+            bottom: 15px;
+            left: 45%;
             transform: translateX(-50%);
             width: 170px;
             height: 105px;
@@ -91,51 +91,51 @@
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет ровно на ударной плоскости */
+        /* Предмет сидит прямо на ударной части наковальни */
         #target-item {
             position: absolute;
-            bottom: 82px;
-            left: 50%;
+            bottom: 84px;
+            left: 45%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 60px;
+            width: 62px;
+            height: 62px;
             object-fit: contain;
             z-index: 3;
             transition: transform 0.05s ease-out, opacity 0.08s;
             filter: drop-shadow(0 6px 10px rgba(0,0,0,0.6));
         }
 
-        /* Молот в боевом замахе (высоко справа в воздухе) */
+        /* Молот в боевой вертикальной стойке замаха */
         #hammer {
             position: absolute;
-            top: -15px;
-            right: -10px;
-            width: 150px;
-            height: 150px;
+            bottom: 85px;
+            left: 95px;
+            width: 145px;
+            height: 145px;
             object-fit: contain;
-            transform-origin: 18% 82%; /* Рукоять */
-            transform: rotate(20deg);
-            transition: transform 0.07s cubic-bezier(0.15, 0.85, 0.35, 1.2);
+            transform-origin: 20% 80%;
+            transform: rotate(10deg) translate(20px, -45px);
+            transition: transform 0.06s cubic-bezier(0.18, 0.9, 0.3, 1.15);
             z-index: 6;
             pointer-events: none;
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар: резкий замах бойком сверху прямо по центру предмета */
+        /* Удар: мощный наклон бойка ровно по предмету */
         #hammer.hit {
-            transform: rotate(-48deg) translate(-65px, 60px);
+            transform: rotate(-38deg) translate(-42px, 16px);
         }
 
         /* Промах */
         #hammer.broken {
-            transform: rotate(75deg) translate(30px, 30px);
+            transform: rotate(65deg) translate(40px, 30px);
             opacity: 0.25;
         }
 
         #glow {
             position: absolute;
             bottom: 20px;
-            left: 50%;
+            left: 45%;
             transform: translateX(-50%);
             width: 180px;
             height: 45px;
@@ -217,9 +217,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=5" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=5" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=5" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=6" alt="Наковальня">
+            <img id="target-item" src="images/egg.png?v=6" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=6" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -235,8 +235,8 @@
         if (tg) { tg.ready(); tg.expand(); }
 
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=5", color: ["#ffffff", "#fef08a", "#f59e0b"], haptic: "light", freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=5", color: ["#ef4444", "#dc2626", "#84cc16"], haptic: "light", freq: 440 }
+            { name: "Куриное яйцо", src: "images/egg.png?v=6", color: ["#ffffff", "#fef08a", "#f59e0b"], haptic: "light", freq: 520 },
+            { name: "Спелый томат", src: "images/tomato.png?v=6", color: ["#ef4444", "#dc2626", "#84cc16"], haptic: "light", freq: 440 }
         ];
 
         // Web Audio API
@@ -288,8 +288,8 @@
                 const p = document.createElement('div');
                 p.className = 'particle';
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = '50%';
-                p.style.bottom = '100px';
+                p.style.left = '45%';
+                p.style.bottom = '105px';
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
