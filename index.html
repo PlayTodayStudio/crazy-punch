@@ -91,44 +91,44 @@
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Крупный предмет на рабочей площадке */
+        /* Предмет: увеличен (90px) и опущен (bottom: 65px) чтобы стоять плотно */
         #target-item {
             position: absolute;
-            bottom: 74px;
+            bottom: 65px;
             left: 40%;
             transform: translateX(-50%);
-            width: 78px;
-            height: 78px;
+            width: 90px;
+            height: 90px;
             object-fit: contain;
             z-index: 3;
             transition: transform 0.05s ease-out, opacity 0.08s;
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.7));
         }
 
-        /* Молот в боевой вертикальной стойке замаха */
+        /* Молот: перенесен вправо, стоит вертикально (с легким наклоном) */
         #hammer {
             position: absolute;
-            bottom: 60px;
-            left: 100px;
-            width: 155px;
-            height: 155px;
+            bottom: 75px;
+            left: 145px; 
+            width: 140px;
+            height: 140px;
             object-fit: contain;
             transform-origin: 20% 85%;
-            transform: rotate(-45deg) translate(-10px, -45px);
+            transform: rotate(20deg) translate(0px, -20px);
             transition: transform 0.06s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             z-index: 6;
             pointer-events: none;
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар бойком по центру наковальни */
+        /* Удар: мощно бьет сверху-справа по центру предмета */
         #hammer.hit {
-            transform: rotate(-88deg) translate(-50px, -20px);
+            transform: rotate(-62deg) translate(-55px, 25px);
         }
 
-        /* Промах: молот отскакивает назад в замах */
+        /* Промах: бессильно падает вниз-вправо */
         #hammer.broken {
-            transform: rotate(-30deg) translate(15px, -60px);
+            transform: rotate(45deg) translate(15px, 35px);
             opacity: 0.35;
         }
 
@@ -217,9 +217,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=8" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=8" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=8" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=9" alt="Наковальня">
+            <img id="target-item" src="images/egg.png?v=9" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=9" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -238,8 +238,8 @@
         }
 
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=8", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=8", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
+            { name: "Куриное яйцо", src: "images/egg.png?v=9", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
+            { name: "Спелый томат", src: "images/tomato.png?v=9", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
         ];
 
         // Web Audio API
@@ -294,7 +294,7 @@
                 p.className = 'particle';
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
                 p.style.left = '40%';
-                p.style.bottom = '100px';
+                p.style.bottom = '95px';
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
