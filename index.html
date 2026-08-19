@@ -91,45 +91,46 @@
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет: сдвинут чуть правее (44%) и опущен (55px), чтобы сидеть ровно на площадке */
+        /* Предмет: поднят выше, чтобы не проваливаться в наковальню */
         #target-item {
             position: absolute;
-            bottom: 55px;
-            left: 44%;
+            bottom: 70px;
+            left: 42%;
             transform: translateX(-50%);
-            width: 85px;
-            height: 85px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
             z-index: 3;
             transition: transform 0.05s ease-out, opacity 0.08s;
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.7));
         }
 
-        /* Молот: стоит справа, вертикальный замах (рукоять смотрит вниз) */
+        /* Молот: перенесен вправо, стоит вертикально (с легким наклоном) */
         #hammer {
             position: absolute;
-            bottom: 60px;
-            left: 140px;
+            bottom: 80px;
+            left: 170px;
             width: 155px;
             height: 155px;
             object-fit: contain;
-            transform-origin: 20% 85%;
-            transform: rotate(-35deg) translate(10px, -30px);
+            transform-origin: 15% 85%; /* Точка вращения - конец рукояти */
+            transform: rotate(-30deg) translate(0px, 0px);
             transition: transform 0.06s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             z-index: 6;
             pointer-events: none;
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар: резкий обрушивающийся удар бойком по предмету */
+        /* Удар: мощно бьет сверху-справа по предмету */
         #hammer.hit {
-            transform: rotate(-95deg) translate(-40px, -15px);
+            transform: rotate(-100deg) translate(-50px, -20px);
         }
 
-        /* Промах: отскок с сохранением вертикального положения */
+        /* Промах: молот пролетает мимо вниз-влево и "падает" */
         #hammer.broken {
-            transform: rotate(-20deg) translate(25px, -40px);
-            opacity: 0.35;
+            transform: rotate(-130deg) translate(-80px, 40px);
+            opacity: 0;
+            transition: transform 0.25s ease-in, opacity 0.2s ease-out;
         }
 
         #glow {
@@ -217,9 +218,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=10" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=10" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=10" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=11" alt="Наковальня">
+            <img id="target-item" src="images/egg.png?v=11" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=11" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -238,11 +239,10 @@
         }
 
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=10", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=10", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
+            { name: "Куриное яйцо", src: "images/egg.png?v=11", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
+            { name: "Спелый томат", src: "images/tomato.png?v=11", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
         ];
 
-        // Web Audio API
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playHitSound(freq, isFail = false) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -272,7 +272,6 @@
             osc.stop(now + 0.12);
         }
 
-        // Haptic Feedback
         function triggerHaptic(type) {
             try {
                 if (tg && tg.HapticFeedback) {
@@ -293,8 +292,8 @@
                 const p = document.createElement('div');
                 p.className = 'particle';
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = '44%';
-                p.style.bottom = '85px';
+                p.style.left = '42%';
+                p.style.bottom = '100px';
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
@@ -361,10 +360,9 @@
             const targetEnd = targetStart + targetWidth;
             const hitSuccess = cursorPosition >= targetStart && cursorPosition <= targetEnd;
 
-            hammerEl.classList.add('hit');
-
             if (hitSuccess) {
                 isProcessingHit = true;
+                hammerEl.classList.add('hit');
                 triggerHaptic('hit');
                 playHitSound(item.freq);
 
@@ -387,10 +385,10 @@
 
             } else {
                 isProcessingHit = true;
+                hammerEl.classList.add('broken');
                 triggerHaptic('fail');
                 playHitSound(0, true);
-
-                hammerEl.classList.add('broken');
+                
                 gameAreaEl.classList.add('shake');
 
                 const finalScore = Number(scoreEl.innerText);
@@ -400,7 +398,6 @@
                 }
 
                 setTimeout(() => {
-                    hammerEl.classList.remove('hit');
                     hammerEl.classList.remove('broken');
                     gameAreaEl.classList.remove('shake');
                     currentIndex = 0;
