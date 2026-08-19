@@ -78,38 +78,38 @@
             justify-content: center;
         }
         
-        /* Наковальня */
+        /* Наковальня - увеличенная и сдвинутая левее для правильной соосности */
         #anvil {
             position: absolute;
             bottom: 0px;
-            left: 40%;
+            left: 45%;
             transform: translateX(-50%);
-            width: 220px;
-            height: 135px;
+            width: 260px;
+            height: 160px;
             object-fit: contain;
             z-index: 2;
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет - увеличен почти в 2 раза и отцентрирован на площадке */
+        /* Предмет - подогнан по новой высоте наковальни и отцентрирован на площадке */
         #target-item {
             position: absolute;
-            bottom: 75px;
-            left: 43%;
+            bottom: 82px;
+            left: 42%;
             transform: translateX(-50%);
-            width: 135px;
-            height: 135px;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
             z-index: 3;
             transition: transform 0.05s ease-out, opacity 0.08s;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.7));
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));
         }
 
         /* Молот */
         #hammer {
             position: absolute;
-            bottom: 85px;
-            left: 175px;
+            bottom: 90px;
+            left: 170px;
             width: 155px;
             height: 155px;
             object-fit: contain;
@@ -121,9 +121,9 @@
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар - скорректирован под новую высоту предмета */
+        /* Удар - ложится ровно на предмет */
         #hammer.hit {
-            transform: rotate(-82deg) translate(-25px, -15px);
+            transform: rotate(-85deg) translate(-35px, -15px);
         }
 
         /* Промах */
@@ -135,11 +135,11 @@
 
         #glow {
             position: absolute;
-            bottom: 10px;
-            left: 40%;
+            bottom: 15px;
+            left: 45%;
             transform: translateX(-50%);
-            width: 220px;
-            height: 45px;
+            width: 240px;
+            height: 50px;
             background: radial-gradient(ellipse, rgba(56, 189, 248, 0.25), transparent 70%);
             z-index: 1;
         }
@@ -216,9 +216,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=15" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=15" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=15" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=16" alt="Наковальня">
+            <img id="target-item" src="images/egg.png?v=16" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=16" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -237,8 +237,8 @@
         }
 
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=15", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=15", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
+            { name: "Куриное яйцо", src: "images/egg.png?v=16", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
+            { name: "Спелый томат", src: "images/tomato.png?v=16", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
         ];
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -295,8 +295,8 @@
                 p.style.height = `${size}px`;
                 
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = '43%'; 
-                p.style.bottom = '130px'; /* Подняли точку взрыва из-за большого предмета */
+                p.style.left = '42%'; 
+                p.style.bottom = '110px';
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
