@@ -78,38 +78,38 @@
             justify-content: center;
         }
         
-        /* Наковальня */
+        /* Наковальня - теперь массивная (220px) */
         #anvil {
             position: absolute;
-            bottom: 12px;
-            left: 40%;
+            bottom: 0px;
+            left: 45%;
             transform: translateX(-50%);
-            width: 175px;
-            height: 110px;
+            width: 220px;
+            height: 135px;
             object-fit: contain;
             z-index: 2;
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет */
+        /* Предмет - стоит на новой высоте наковальни */
         #target-item {
             position: absolute;
-            bottom: 70px;
-            left: 42%;
+            bottom: 80px;
+            left: 45%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 80px;
+            width: 75px;
+            height: 75px;
             object-fit: contain;
             z-index: 3;
             transition: transform 0.05s ease-out, opacity 0.08s;
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.7));
         }
 
-        /* Молот: стоит справа, вертикальный замах */
+        /* Молот - вертикальная стойка */
         #hammer {
             position: absolute;
-            bottom: 80px;
-            left: 170px;
+            bottom: 85px;
+            left: 175px;
             width: 155px;
             height: 155px;
             object-fit: contain;
@@ -121,24 +121,24 @@
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар: сдвинули левее и чуть выше для точного попадания по центру */
+        /* Удар - останавливается на предмете, не пробивая наковальню */
         #hammer.hit {
-            transform: rotate(-102deg) translate(-65px, -5px);
+            transform: rotate(-86deg) translate(-25px, -5px);
         }
 
         /* Промах */
         #hammer.broken {
-            transform: rotate(-130deg) translate(-80px, 40px);
+            transform: rotate(-120deg) translate(-60px, 40px);
             opacity: 0;
             transition: transform 0.25s ease-in, opacity 0.2s ease-out;
         }
 
         #glow {
             position: absolute;
-            bottom: 20px;
-            left: 40%;
+            bottom: 10px;
+            left: 45%;
             transform: translateX(-50%);
-            width: 180px;
+            width: 220px;
             height: 45px;
             background: radial-gradient(ellipse, rgba(56, 189, 248, 0.25), transparent 70%);
             z-index: 1;
@@ -181,8 +181,6 @@
         }
         .particle {
             position: absolute;
-            width: 11px;
-            height: 11px;
             border-radius: 50%;
             pointer-events: none;
             z-index: 10;
@@ -218,9 +216,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=12" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=12" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=12" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=13" alt="Наковальня">
+            <img id="target-item" src="images/egg.png?v=13" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=13" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -239,8 +237,8 @@
         }
 
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=12", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=12", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
+            { name: "Куриное яйцо", src: "images/egg.png?v=13", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
+            { name: "Спелый томат", src: "images/tomato.png?v=13", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
         ];
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -288,23 +286,31 @@
 
         function createShatterEffect(colors) {
             const stage = document.getElementById('anvil-stage');
-            for (let i = 0; i < 26; i++) {
+            // Увеличили количество частиц для сочности
+            for (let i = 0; i < 55; i++) {
                 const p = document.createElement('div');
                 p.className = 'particle';
+                
+                // Рандомный размер частиц от мелких до крупных
+                const size = Math.random() * 8 + 4; 
+                p.style.width = `${size}px`;
+                p.style.height = `${size}px`;
+                
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = '42%';
+                p.style.left = '45%';
                 p.style.bottom = '100px';
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
-                const dist = Math.random() * 90 + 25;
+                // Больший радиус разлета
+                const dist = Math.random() * 120 + 30; 
                 const x = Math.cos(angle) * dist;
-                const y = Math.sin(angle) * dist - 20;
+                const y = Math.sin(angle) * dist - 30;
 
                 p.animate([
                     { transform: 'translate(-50%, 0) scale(1)', opacity: 1 },
                     { transform: `translate(calc(-50% + ${x}px), ${y}px) scale(0)`, opacity: 0 }
-                ], { duration: 360 + Math.random() * 180, easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)' }).onfinish = () => p.remove();
+                ], { duration: 400 + Math.random() * 200, easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)' }).onfinish = () => p.remove();
             }
         }
 
