@@ -78,64 +78,64 @@
             justify-content: center;
         }
         
-        /* Наковальня смещена левее под угол площадки */
+        /* Наковальня сдвинута левее */
         #anvil {
             position: absolute;
             bottom: 15px;
-            left: 45%;
+            left: 40%;
             transform: translateX(-50%);
-            width: 170px;
-            height: 105px;
+            width: 175px;
+            height: 110px;
             object-fit: contain;
             z-index: 2;
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет сидит прямо на ударной части наковальни */
+        /* Предмет плотно стоит на ударной площадке */
         #target-item {
             position: absolute;
-            bottom: 84px;
-            left: 45%;
+            bottom: 72px;
+            left: 40%;
             transform: translateX(-50%);
-            width: 62px;
-            height: 62px;
+            width: 58px;
+            height: 58px;
             object-fit: contain;
             z-index: 3;
             transition: transform 0.05s ease-out, opacity 0.08s;
-            filter: drop-shadow(0 6px 10px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
         }
 
-        /* Молот в боевой вертикальной стойке замаха */
+        /* Молот: поднят строго вертикально в замахе */
         #hammer {
             position: absolute;
-            bottom: 85px;
-            left: 95px;
-            width: 145px;
-            height: 145px;
+            bottom: 80px;
+            left: 125px;
+            width: 140px;
+            height: 140px;
             object-fit: contain;
-            transform-origin: 20% 80%;
-            transform: rotate(10deg) translate(20px, -45px);
-            transition: transform 0.06s cubic-bezier(0.18, 0.9, 0.3, 1.15);
+            transform-origin: 15% 85%;
+            transform: rotate(45deg) translate(10px, -50px);
+            transition: transform 0.06s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             z-index: 6;
             pointer-events: none;
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар: мощный наклон бойка ровно по предмету */
+        /* Удар: мощный размах бойка сверху вниз прямо по наковальне */
         #hammer.hit {
-            transform: rotate(-38deg) translate(-42px, 16px);
+            transform: rotate(-36deg) translate(-68px, 14px);
         }
 
-        /* Промах */
+        /* Анимация промаха: молот отскакивает назад и дрожит */
         #hammer.broken {
-            transform: rotate(65deg) translate(40px, 30px);
-            opacity: 0.25;
+            transform: rotate(55deg) translate(35px, -35px);
+            opacity: 0.35;
         }
 
         #glow {
             position: absolute;
             bottom: 20px;
-            left: 45%;
+            left: 40%;
             transform: translateX(-50%);
             width: 180px;
             height: 45px;
@@ -217,9 +217,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=6" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=6" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=6" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=7" alt="Наковальня">
+            <img id="target-item" src="images/egg.png?v=7" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=7" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -235,8 +235,8 @@
         if (tg) { tg.ready(); tg.expand(); }
 
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=6", color: ["#ffffff", "#fef08a", "#f59e0b"], haptic: "light", freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=6", color: ["#ef4444", "#dc2626", "#84cc16"], haptic: "light", freq: 440 }
+            { name: "Куриное яйцо", src: "images/egg.png?v=7", color: ["#ffffff", "#fef08a", "#f59e0b"], haptic: "light", freq: 520 },
+            { name: "Спелый томат", src: "images/tomato.png?v=7", color: ["#ef4444", "#dc2626", "#84cc16"], haptic: "light", freq: 440 }
         ];
 
         // Web Audio API
@@ -251,12 +251,12 @@
 
             if (isFail) {
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(140, now);
-                osc.frequency.exponentialRampToValueAtTime(30, now + 0.35);
-                gain.gain.setValueAtTime(0.7, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.frequency.setValueAtTime(160, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.3);
+                gain.gain.setValueAtTime(0.6, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 osc.start(now);
-                osc.stop(now + 0.35);
+                osc.stop(now + 0.3);
                 return;
             }
 
@@ -288,8 +288,8 @@
                 const p = document.createElement('div');
                 p.className = 'particle';
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = '45%';
-                p.style.bottom = '105px';
+                p.style.left = '40%';
+                p.style.bottom = '95px';
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
@@ -367,7 +367,7 @@
 
                     targetItemEl.style.transform = 'translateX(-50%) scale(1.3, 0.15)';
                     targetItemEl.style.opacity = '0';
-                }, 55);
+                }, 50);
 
                 setTimeout(() => {
                     hammerEl.classList.remove('hit');
