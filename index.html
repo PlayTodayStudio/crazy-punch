@@ -91,7 +91,7 @@
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет: поднят выше, чтобы не проваливаться в наковальню */
+        /* Предмет */
         #target-item {
             position: absolute;
             bottom: 70px;
@@ -105,7 +105,7 @@
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.7));
         }
 
-        /* Молот: перенесен вправо, стоит вертикально (с легким наклоном) */
+        /* Молот: стоит справа, вертикальный замах */
         #hammer {
             position: absolute;
             bottom: 80px;
@@ -113,7 +113,7 @@
             width: 155px;
             height: 155px;
             object-fit: contain;
-            transform-origin: 15% 85%; /* Точка вращения - конец рукояти */
+            transform-origin: 15% 85%;
             transform: rotate(-30deg) translate(0px, 0px);
             transition: transform 0.06s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             z-index: 6;
@@ -121,12 +121,12 @@
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар: мощно бьет сверху-справа по предмету */
+        /* Удар: сдвинули левее и чуть выше для точного попадания по центру */
         #hammer.hit {
-            transform: rotate(-100deg) translate(-50px, -20px);
+            transform: rotate(-102deg) translate(-65px, -5px);
         }
 
-        /* Промах: молот пролетает мимо вниз-влево и "падает" */
+        /* Промах */
         #hammer.broken {
             transform: rotate(-130deg) translate(-80px, 40px);
             opacity: 0;
@@ -218,9 +218,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=11" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=11" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=11" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=12" alt="Наковальня">
+            <img id="target-item" src="images/egg.png?v=12" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=12" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -239,8 +239,8 @@
         }
 
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=11", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=11", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
+            { name: "Куриное яйцо", src: "images/egg.png?v=12", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
+            { name: "Спелый томат", src: "images/tomato.png?v=12", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
         ];
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
