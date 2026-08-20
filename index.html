@@ -68,7 +68,6 @@
             letter-spacing: 0.5px;
         }
         
-        /* Сцена */
         #anvil-stage {
             position: relative;
             width: 280px;
@@ -90,7 +89,6 @@
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет (базовые значения, теперь они переопределяются через JS) */
         #target-item {
             position: absolute;
             bottom: 82px;
@@ -104,7 +102,6 @@
             filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));
         }
 
-        /* Молот */
         #hammer {
             position: absolute;
             bottom: 90px;
@@ -141,7 +138,6 @@
             z-index: 1;
         }
 
-        /* Тайминг-бар */
         #bar-container {
             position: relative;
             width: 100%;
@@ -213,9 +209,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=18" alt="Наковальня">
-            <img id="target-item" src="images/1soap_bubble.png?v=18" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=18" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=19" alt="Наковальня">
+            <img id="target-item" src="images/1soap_bubble.png?v=19" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=19" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -233,9 +229,6 @@
             tg.expand(); 
         }
 
-        // В этом массиве мы можем индивидуально двигать и масштабировать каждый предмет
-        // size - размер предмета (по умолчанию 100)
-        // bottom - высота посадки (по умолчанию 82)
         const ITEMS = [
             { name: "Мыльный пузырь", src: "images/1soap_bubble.png", color: ["#a5f3fc", "#fbcfe8", "#ffffff"], freq: 850, size: 100, bottom: 82 },
             { name: "Легкий одуванчик", src: "images/2dandelion.png", color: ["#ffffff", "#fef08a", "#4ade80"], freq: 800, size: 120, bottom: 65 },
@@ -254,6 +247,50 @@
             { name: "Цветочный горшок", src: "images/15flower_pot.png", color: ["#b45309", "#d97706", "#92400e"], freq: 350, size: 110, bottom: 78 },
             { name: "Трехлитровая банка", src: "images/16glass3liter.png", color: ["#ffffff", "#e5e7eb", "#a7f3d0"], freq: 500, size: 110, bottom: 82 }
         ];
+
+        let currentIndex = 0;
+        let bestScore = 0;
+        let cursorPosition = 0;
+        let direction = 1;
+        let isProcessingHit = false;
+
+        const cursorEl = document.getElementById('cursor');
+        const targetEl = document.getElementById('target-zone');
+        const scoreEl = document.getElementById('current-score');
+        const bestScoreEl = document.getElementById('best-score');
+        const gameAreaEl = document.getElementById('game-area');
+        const itemNameEl = document.getElementById('item-name');
+        const itemLevelEl = document.getElementById('item-level');
+        const targetItemEl = document.getElementById('target-item');
+        const hammerEl = document.getElementById('hammer');
+
+        // ==========================================
+        // 1. ЗАГРУЗКА РЕКОРДА ПРИ СТАРТЕ
+        // ==========================================
+        
+        // Сначала грузим из памяти браузера (резервный вариант)
+        let localScore = localStorage.getItem('cp_best_score');
+        if (localScore) {
+            bestScore = parseInt(localScore, 10);
+            bestScoreEl.innerText = bestScore;
+        }
+
+        // Затем грузим из облака Telegram (основной вариант)
+        if (tg && tg.CloudStorage) {
+            tg.CloudStorage.getItem('cp_best_score', function(err, value) {
+                if (!err && value) {
+                    const cloudScore = parseInt(value, 10);
+                    // Берем тот рекорд, который больше
+                    if (cloudScore > bestScore) {
+                        bestScore = cloudScore;
+                        bestScoreEl.innerText = bestScore;
+                        localStorage.setItem('cp_best_score', bestScore.toString());
+                    }
+                }
+            });
+        }
+
+        // ==========================================
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playHitSound(freq, isFail = false) {
@@ -327,32 +364,11 @@
             }
         }
 
-        let currentIndex = 0;
-        let bestScore = 0;
-        let cursorPosition = 0;
-        let direction = 1;
-        let isProcessingHit = false;
-
-        const cursorEl = document.getElementById('cursor');
-        const targetEl = document.getElementById('target-zone');
-        const scoreEl = document.getElementById('current-score');
-        const bestScoreEl = document.getElementById('best-score');
-        const gameAreaEl = document.getElementById('game-area');
-        const itemNameEl = document.getElementById('item-name');
-        const itemLevelEl = document.getElementById('item-level');
-        const targetItemEl = document.getElementById('target-item');
-        const hammerEl = document.getElementById('hammer');
-
-        let targetStart = 35;
-        let targetWidth = 26;
-        let speed = 1.3;
-
         function updateItemDisplay() {
             const item = ITEMS[currentIndex];
             itemNameEl.innerText = item.name;
             itemLevelEl.innerText = `ПРЕДМЕТ ${currentIndex + 1} ИЗ ${ITEMS.length}`;
             
-            // Динамическое применение индивидуальных настроек из массива ITEMS
             targetItemEl.style.width = (item.size || 100) + 'px';
             targetItemEl.style.height = (item.size || 100) + 'px';
             targetItemEl.style.bottom = (item.bottom || 82) + 'px';
@@ -361,9 +377,9 @@
             targetItemEl.style.opacity = '1';
             targetItemEl.style.transform = 'translateX(-50%) scale(1)';
 
-            targetWidth = Math.max(8, 28 - currentIndex * 1.5); // Сделал игру чуть легче на поздних этапах
+            targetWidth = Math.max(8, 28 - currentIndex * 1.5); 
             targetStart = Math.random() * (100 - targetWidth - 10) + 5;
-            speed = 1.3 + (currentIndex * 0.15); // Более плавное ускорение сложности
+            speed = 1.3 + (currentIndex * 0.15); 
 
             targetEl.style.left = targetStart + '%';
             targetEl.style.width = targetWidth + '%';
@@ -420,6 +436,20 @@
                 if (finalScore > bestScore) {
                     bestScore = finalScore;
                     bestScoreEl.innerText = bestScore;
+
+                    // ==========================================
+                    // 2. СОХРАНЕНИЕ НОВОГО РЕКОРДА
+                    // ==========================================
+                    
+                    // Сохраняем в браузер
+                    localStorage.setItem('cp_best_score', bestScore.toString());
+                    
+                    // Сохраняем в облако Telegram
+                    if (tg && tg.CloudStorage) {
+                        tg.CloudStorage.setItem('cp_best_score', bestScore.toString());
+                    }
+                    
+                    // ==========================================
                 }
 
                 setTimeout(() => {
