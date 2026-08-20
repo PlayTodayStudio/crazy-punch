@@ -261,7 +261,8 @@
             tg.MainButton.setText("ПОДЕЛИТЬСЯ РЕКОРДОМ");
             tg.MainButton.onClick(() => {
                 const text = `Я разбил ${bestScore} предметов в Кузнице Гнева! 🔥 Сможешь побить мой рекорд?`;
-                tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/crazypunch_bot&text=${encodeURIComponent(text)}`);
+                // Вот здесь мы меняем ссылку на прямую (добавили /crazypunch в конец url):
+                tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/crazypunch_bot/crazypunch&text=${encodeURIComponent(text)}`);
             });
         }
 
