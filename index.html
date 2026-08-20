@@ -32,13 +32,13 @@
             border-radius: 14px;
             padding: 8px 16px;
             text-align: center;
-            transition: border-color 0.3s;
+            transition: all 0.4s ease;
         }
-        /* Подсветка счета при комбо */
-        .ui-box.combo-active {
-            border-color: #ef4444;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-        }
+        /* Стадии комбо для блока со счетом */
+        .ui-box.combo-1 { border-color: #f59e0b; box-shadow: 0 0 12px rgba(245, 158, 11, 0.4); }
+        .ui-box.combo-2 { border-color: #ef4444; box-shadow: 0 0 16px rgba(239, 68, 68, 0.6); }
+        .ui-box.combo-3 { border-color: #dc2626; box-shadow: 0 0 24px rgba(220, 38, 38, 0.9); transform: scale(1.05); }
+        
         .ui-label { font-size: 10px; color: #717b9e; text-transform: uppercase; font-weight: 700; }
         .ui-value { font-size: 22px; font-weight: 900; color: #f3f4f6; }
         
@@ -133,22 +133,40 @@
             transition: transform 0.25s ease-in, opacity 0.2s ease-out;
         }
 
+        /* Сильное базовое свечение */
         #glow {
             position: absolute;
             bottom: 15px;
             left: 38%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) scale(1);
             width: 240px;
             height: 50px;
-            /* Базовое синее свечение */
-            background: radial-gradient(ellipse, rgba(56, 189, 248, 0.25), transparent 70%);
+            background: radial-gradient(ellipse, rgba(56, 189, 248, 0.4), transparent 70%);
             z-index: 1;
-            transition: background 0.4s ease;
+            transition: all 0.5s ease;
         }
 
-        /* Красное свечение при комбо */
-        #glow.combo {
-            background: radial-gradient(ellipse, rgba(239, 68, 68, 0.4), transparent 70%);
+        /* Стадия 1: Разогрев (5+ попаданий) */
+        #glow.combo-1 {
+            background: radial-gradient(ellipse, rgba(245, 158, 11, 0.8), transparent 75%);
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        /* Стадия 2: Горячо (10+ попаданий) */
+        #glow.combo-2 {
+            background: radial-gradient(ellipse, rgba(239, 68, 68, 0.9), transparent 80%);
+            transform: translateX(-50%) scale(1.2);
+        }
+
+        /* Стадия 3: Ярость (15+ попаданий) - пульсация */
+        #glow.combo-3 {
+            background: radial-gradient(ellipse, rgba(220, 38, 38, 1), transparent 85%);
+            animation: ragePulse 0.8s infinite alternate ease-in-out;
+        }
+
+        @keyframes ragePulse {
+            0% { transform: translateX(-50%) scale(1.2); opacity: 0.8; }
+            100% { transform: translateX(-50%) scale(1.4); opacity: 1; }
         }
 
         #bar-container {
@@ -217,15 +235,14 @@
     <div id="game-area">
         <div id="stage-info">
             <div id="item-name">Мыльный пузырь</div>
-            <!-- Убрали лимит из 16, просто пишем уровень -->
             <div id="item-level">УРОВЕНЬ 1</div>
         </div>
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=20" alt="Наковальня">
-            <img id="target-item" src="images/1soap_bubble.png?v=20" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=20" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=21" alt="Наковальня">
+            <img id="target-item" src="images/1soap_bubble.png?v=21" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=21" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -241,12 +258,9 @@
         if (tg) { 
             tg.ready(); 
             tg.expand(); 
-            
-            // Настройка нативной кнопки Telegram для шеринга
             tg.MainButton.setText("ПОДЕЛИТЬСЯ РЕКОРДОМ");
             tg.MainButton.onClick(() => {
                 const text = `Я разбил ${bestScore} предметов в Кузнице Гнева! 🔥 Сможешь побить мой рекорд?`;
-                // Открываем окно выбора чата с готовым текстом и ссылкой на бота
                 tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/crazypunch_bot&text=${encodeURIComponent(text)}`);
             });
         }
@@ -275,7 +289,7 @@
         let cursorPosition = 0;
         let direction = 1;
         let isProcessingHit = false;
-        let comboCounter = 0; // Счетчик ударов подряд
+        let comboCounter = 0;
 
         const cursorEl = document.getElementById('cursor');
         const targetEl = document.getElementById('target-zone');
@@ -289,7 +303,6 @@
         const glowEl = document.getElementById('glow');
         const scoreBoxEl = document.getElementById('score-box');
 
-        // Загрузка рекордов
         let localScore = localStorage.getItem('cp_best_score');
         if (localScore) {
             bestScore = parseInt(localScore, 10);
@@ -354,8 +367,12 @@
 
         function createShatterEffect(colors) {
             const stage = document.getElementById('anvil-stage');
-            // Если активно комбо, частиц вылетает больше
-            const particlesCount = comboCounter >= 3 ? 75 : 50; 
+            
+            // Количество осколков увеличивается в зависимости от стадии комбо
+            let particlesCount = 40;
+            if (comboCounter >= 15) particlesCount = 100;
+            else if (comboCounter >= 10) particlesCount = 75;
+            else if (comboCounter >= 5)  particlesCount = 55;
             
             for (let i = 0; i < particlesCount; i++) {
                 const p = document.createElement('div');
@@ -371,9 +388,12 @@
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
-                const dist = Math.random() * 140 + 40; 
+                // Разлет тоже становится сильнее на высоких комбо
+                const baseDist = comboCounter >= 15 ? 180 : 140;
+                const dist = Math.random() * baseDist + 40; 
                 const x = Math.cos(angle) * dist;
                 const y = Math.sin(angle) * dist - 30;
+
                 const rot = Math.random() * 360;
 
                 p.animate([
@@ -384,11 +404,9 @@
         }
 
         function updateItemDisplay() {
-            // Если предметов больше 16, он просто зациклит их, но уровень продолжит расти
             const item = ITEMS[currentIndex % ITEMS.length];
             
             itemNameEl.innerText = item.name;
-            // Убрали лимит, показываем просто текущий этап
             itemLevelEl.innerText = `УРОВЕНЬ ${currentIndex + 1}`; 
             
             targetItemEl.style.width = (item.size || 100) + 'px';
@@ -407,6 +425,24 @@
             targetEl.style.width = targetWidth + '%';
         }
 
+        function updateComboVisuals() {
+            // Очищаем старые классы
+            glowEl.className = '';
+            scoreBoxEl.className = 'ui-box';
+
+            // Навешиваем новые в зависимости от набитого счетчика
+            if (comboCounter >= 15) {
+                glowEl.classList.add('combo-3');
+                scoreBoxEl.classList.add('combo-3');
+            } else if (comboCounter >= 10) {
+                glowEl.classList.add('combo-2');
+                scoreBoxEl.classList.add('combo-2');
+            } else if (comboCounter >= 5) {
+                glowEl.classList.add('combo-1');
+                scoreBoxEl.classList.add('combo-1');
+            }
+        }
+
         function gameLoop() {
             cursorPosition += direction * speed;
             if (cursorPosition >= 100) { cursorPosition = 100; direction = -1; }
@@ -419,7 +455,6 @@
             e.preventDefault();
             if (isProcessingHit) return;
 
-            // Скрываем кнопку шеринга, как только игрок начинает бить
             if (tg && tg.MainButton.isVisible) {
                 tg.MainButton.hide();
             }
@@ -430,13 +465,8 @@
 
             if (hitSuccess) {
                 isProcessingHit = true;
-                comboCounter++; // Увеличиваем счетчик комбо
-                
-                // Включаем эффект Ярости, если попадаем 3+ раз подряд
-                if (comboCounter >= 3) {
-                    glowEl.classList.add('combo');
-                    scoreBoxEl.classList.add('combo-active');
-                }
+                comboCounter++; 
+                updateComboVisuals(); // Обновляем цвет свечения
 
                 hammerEl.classList.add('hit');
                 triggerHaptic('hit');
@@ -461,9 +491,10 @@
 
             } else {
                 isProcessingHit = true;
-                comboCounter = 0; // Сбрасываем комбо
-                glowEl.classList.remove('combo');
-                scoreBoxEl.classList.remove('combo-active');
+                
+                // Сброс комбо при промахе
+                comboCounter = 0; 
+                updateComboVisuals();
 
                 hammerEl.classList.add('broken');
                 triggerHaptic('fail');
@@ -483,7 +514,6 @@
                     }
                 }
 
-                // Показываем нативную кнопку шеринга Telegram при промахе
                 if (tg && finalScore > 0) {
                     tg.MainButton.show();
                 }
