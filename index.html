@@ -68,6 +68,7 @@
             letter-spacing: 0.5px;
         }
         
+        /* Сцена */
         #anvil-stage {
             position: relative;
             width: 280px;
@@ -80,32 +81,34 @@
         #anvil {
             position: absolute;
             bottom: 0px;
-            left: 40%;
+            left: 35%;
             transform: translateX(-50%);
-            width: 220px;
-            height: 135px;
+            width: 260px;
+            height: 160px;
             object-fit: contain;
             z-index: 2;
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
+        /* Предмет (базовые значения, теперь они переопределяются через JS) */
         #target-item {
             position: absolute;
-            bottom: 75px;
-            left: 43%;
+            bottom: 82px;
+            left: 38%;
             transform: translateX(-50%);
-            width: 135px;
-            height: 135px;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
             z-index: 3;
             transition: transform 0.05s ease-out, opacity 0.08s;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.7));
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));
         }
 
+        /* Молот */
         #hammer {
             position: absolute;
-            bottom: 85px;
-            left: 175px;
+            bottom: 90px;
+            left: 170px;
             width: 155px;
             height: 155px;
             object-fit: contain;
@@ -118,7 +121,7 @@
         }
 
         #hammer.hit {
-            transform: rotate(-82deg) translate(-25px, -15px);
+            transform: rotate(-85deg) translate(-42px, -15px);
         }
 
         #hammer.broken {
@@ -129,15 +132,16 @@
 
         #glow {
             position: absolute;
-            bottom: 10px;
-            left: 40%;
+            bottom: 15px;
+            left: 38%;
             transform: translateX(-50%);
-            width: 220px;
-            height: 45px;
+            width: 240px;
+            height: 50px;
             background: radial-gradient(ellipse, rgba(56, 189, 248, 0.25), transparent 70%);
             z-index: 1;
         }
 
+        /* Тайминг-бар */
         #bar-container {
             position: relative;
             width: 100%;
@@ -209,9 +213,9 @@
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png" alt="Наковальня">
-            <img id="target-item" src="images/1soap_bubble.png" alt="Предмет">
-            <img id="hammer" src="images/hammer.png" alt="Молот">
+            <img id="anvil" src="images/anvil.png?v=18" alt="Наковальня">
+            <img id="target-item" src="images/1soap_bubble.png?v=18" alt="Предмет">
+            <img id="hammer" src="images/hammer.png?v=18" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -229,24 +233,26 @@
             tg.expand(); 
         }
 
-        // Обновленная лесенка предметов
+        // В этом массиве мы можем индивидуально двигать и масштабировать каждый предмет
+        // size - размер предмета (по умолчанию 100)
+        // bottom - высота посадки (по умолчанию 82)
         const ITEMS = [
-            { name: "Мыльный пузырь", src: "images/1soap_bubble.png", color: ["#a5f3fc", "#fbcfe8", "#ffffff"], freq: 850 },
-            { name: "Легкий одуванчик", src: "images/2dandelion.png", color: ["#ffffff", "#fef08a", "#4ade80"], freq: 800 },
-            { name: "Картофельный чипс", src: "images/3chip.png", color: ["#fef08a", "#f59e0b", "#fbbf24"], freq: 750 },
-            { name: "Куриное яйцо", src: "images/4egg.png", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
-            { name: "Спелый томат", src: "images/5tomato.png", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 },
-            { name: "Спелый банан", src: "images/6ripe_banana.png", color: ["#fef08a", "#eab308", "#16a34a"], freq: 400 },
-            { name: "Стеклянный шар", src: "images/7hand-blown.png", color: ["#ffffff", "#9ca3af", "#e5e7eb"], freq: 650 },
-            { name: "Лампочка", src: "images/8light_bulb.png", color: ["#ffffff", "#fef08a", "#d1d5db"], freq: 700 },
-            { name: "Плитка шоколада", src: "images/9milk_chocolate.png", color: ["#78350f", "#92400e", "#b45309"], freq: 450 },
-            { name: "Хрустящее печенье", src: "images/10cookie.png", color: ["#d97706", "#b45309", "#92400e"], freq: 500 },
-            { name: "Сочное яблоко", src: "images/11apple.png", color: ["#ef4444", "#22c55e", "#fef08a"], freq: 460 },
-            { name: "Стеклянный бокал", src: "images/12glassgoblet.png", color: ["#ffffff", "#e5e7eb", "#9ca3af"], freq: 750 },
-            { name: "Керамическая кружка", src: "images/13ceramicmug.png", color: ["#f3f4f6", "#d1d5db", "#9ca3af"], freq: 550 },
-            { name: "Стеклянная бутылка", src: "images/14bottle.png", color: ["#22c55e", "#16a34a", "#ffffff"], freq: 650 },
-            { name: "Цветочный горшок", src: "images/15flower_pot.png", color: ["#b45309", "#d97706", "#92400e"], freq: 350 },
-            { name: "Трехлитровая банка", src: "images/16glass3liter.png", color: ["#ffffff", "#e5e7eb", "#a7f3d0"], freq: 500 }
+            { name: "Мыльный пузырь", src: "images/1soap_bubble.png", color: ["#a5f3fc", "#fbcfe8", "#ffffff"], freq: 850, size: 100, bottom: 82 },
+            { name: "Легкий одуванчик", src: "images/2dandelion.png", color: ["#ffffff", "#fef08a", "#4ade80"], freq: 800, size: 120, bottom: 65 },
+            { name: "Картофельный чипс", src: "images/3chip.png", color: ["#fef08a", "#f59e0b", "#fbbf24"], freq: 750, size: 110, bottom: 65 },
+            { name: "Куриное яйцо", src: "images/4egg.png", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520, size: 100, bottom: 82 },
+            { name: "Спелый томат", src: "images/5tomato.png", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440, size: 100, bottom: 82 },
+            { name: "Спелый банан", src: "images/6ripe_banana.png", color: ["#fef08a", "#eab308", "#16a34a"], freq: 400, size: 130, bottom: 55 },
+            { name: "Стеклянный шар", src: "images/7hand-blown.png", color: ["#ffffff", "#9ca3af", "#e5e7eb"], freq: 650, size: 100, bottom: 82 },
+            { name: "Лампочка", src: "images/8light_bulb.png", color: ["#ffffff", "#fef08a", "#d1d5db"], freq: 700, size: 90, bottom: 82 },
+            { name: "Плитка шоколада", src: "images/9milk_chocolate.png", color: ["#78350f", "#92400e", "#b45309"], freq: 450, size: 110, bottom: 65 },
+            { name: "Хрустящее печенье", src: "images/10cookie.png", color: ["#d97706", "#b45309", "#92400e"], freq: 500, size: 110, bottom: 70 },
+            { name: "Сочное яблоко", src: "images/11apple.png", color: ["#ef4444", "#22c55e", "#fef08a"], freq: 460, size: 100, bottom: 82 },
+            { name: "Стеклянный бокал", src: "images/12glassgoblet.png", color: ["#ffffff", "#e5e7eb", "#9ca3af"], freq: 750, size: 90, bottom: 82 },
+            { name: "Керамическая кружка", src: "images/13ceramicmug.png", color: ["#f3f4f6", "#d1d5db", "#9ca3af"], freq: 550, size: 100, bottom: 82 },
+            { name: "Стеклянная бутылка", src: "images/14bottle.png", color: ["#22c55e", "#16a34a", "#ffffff"], freq: 650, size: 100, bottom: 82 },
+            { name: "Цветочный горшок", src: "images/15flower_pot.png", color: ["#b45309", "#d97706", "#92400e"], freq: 350, size: 110, bottom: 78 },
+            { name: "Трехлитровая банка", src: "images/16glass3liter.png", color: ["#ffffff", "#e5e7eb", "#a7f3d0"], freq: 500, size: 110, bottom: 82 }
         ];
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -303,8 +309,8 @@
                 p.style.height = `${size}px`;
                 
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = '43%'; 
-                p.style.bottom = '130px'; 
+                p.style.left = '38%'; 
+                p.style.bottom = '110px';
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
@@ -345,13 +351,19 @@
             const item = ITEMS[currentIndex];
             itemNameEl.innerText = item.name;
             itemLevelEl.innerText = `ПРЕДМЕТ ${currentIndex + 1} ИЗ ${ITEMS.length}`;
+            
+            // Динамическое применение индивидуальных настроек из массива ITEMS
+            targetItemEl.style.width = (item.size || 100) + 'px';
+            targetItemEl.style.height = (item.size || 100) + 'px';
+            targetItemEl.style.bottom = (item.bottom || 82) + 'px';
+            
             targetItemEl.src = item.src;
             targetItemEl.style.opacity = '1';
             targetItemEl.style.transform = 'translateX(-50%) scale(1)';
 
-            targetWidth = Math.max(8, 28 - currentIndex * 3);
+            targetWidth = Math.max(8, 28 - currentIndex * 1.5); // Сделал игру чуть легче на поздних этапах
             targetStart = Math.random() * (100 - targetWidth - 10) + 5;
-            speed = 1.3 + (currentIndex * 0.35);
+            speed = 1.3 + (currentIndex * 0.15); // Более плавное ускорение сложности
 
             targetEl.style.left = targetStart + '%';
             targetEl.style.width = targetWidth + '%';
