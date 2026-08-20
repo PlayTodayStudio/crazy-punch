@@ -68,7 +68,6 @@
             letter-spacing: 0.5px;
         }
         
-        /* Сцена */
         #anvil-stage {
             position: relative;
             width: 280px;
@@ -78,38 +77,35 @@
             justify-content: center;
         }
         
-        /* Наковальня сдвинута влево сильнее */
         #anvil {
             position: absolute;
             bottom: 0px;
-            left: 35%;
+            left: 40%;
             transform: translateX(-50%);
-            width: 260px;
-            height: 160px;
+            width: 220px;
+            height: 135px;
             object-fit: contain;
             z-index: 2;
             filter: drop-shadow(0 14px 24px rgba(0,0,0,0.95));
         }
 
-        /* Предмет сдвинут влево, но меньше, чтобы лежать по центру площадки */
         #target-item {
             position: absolute;
-            bottom: 82px;
-            left: 38%;
+            bottom: 75px;
+            left: 43%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 100px;
+            width: 135px;
+            height: 135px;
             object-fit: contain;
             z-index: 3;
             transition: transform 0.05s ease-out, opacity 0.08s;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.7));
         }
 
-        /* Молот */
         #hammer {
             position: absolute;
-            bottom: 90px;
-            left: 170px;
+            bottom: 85px;
+            left: 175px;
             width: 155px;
             height: 155px;
             object-fit: contain;
@@ -121,31 +117,27 @@
             filter: drop-shadow(-8px 12px 18px rgba(0,0,0,0.7));
         }
 
-        /* Удар скорректирован, чтобы дотягиваться до новой позиции предмета */
         #hammer.hit {
-            transform: rotate(-85deg) translate(-42px, -15px);
+            transform: rotate(-82deg) translate(-25px, -15px);
         }
 
-        /* Промах */
         #hammer.broken {
             transform: rotate(-120deg) translate(-60px, 40px);
             opacity: 0;
             transition: transform 0.25s ease-in, opacity 0.2s ease-out;
         }
 
-        /* Свечение подогнано под центр композиции */
         #glow {
             position: absolute;
-            bottom: 15px;
-            left: 38%;
+            bottom: 10px;
+            left: 40%;
             transform: translateX(-50%);
-            width: 240px;
-            height: 50px;
+            width: 220px;
+            height: 45px;
             background: radial-gradient(ellipse, rgba(56, 189, 248, 0.25), transparent 70%);
             z-index: 1;
         }
 
-        /* Тайминг-бар */
         #bar-container {
             position: relative;
             width: 100%;
@@ -211,15 +203,15 @@
 
     <div id="game-area">
         <div id="stage-info">
-            <div id="item-name">Куриное яйцо</div>
-            <div id="item-level">ПРЕДМЕТ 1 ИЗ 2</div>
+            <div id="item-name">Мыльный пузырь</div>
+            <div id="item-level">ПРЕДМЕТ 1 ИЗ 16</div>
         </div>
 
         <div id="anvil-stage">
             <div id="glow"></div>
-            <img id="anvil" src="images/anvil.png?v=17" alt="Наковальня">
-            <img id="target-item" src="images/egg.png?v=17" alt="Предмет">
-            <img id="hammer" src="images/hammer.png?v=17" alt="Молот">
+            <img id="anvil" src="images/anvil.png" alt="Наковальня">
+            <img id="target-item" src="images/1soap_bubble.png" alt="Предмет">
+            <img id="hammer" src="images/hammer.png" alt="Молот">
         </div>
 
         <div id="bar-container">
@@ -237,9 +229,24 @@
             tg.expand(); 
         }
 
+        // Обновленная лесенка предметов
         const ITEMS = [
-            { name: "Куриное яйцо", src: "images/egg.png?v=17", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
-            { name: "Спелый томат", src: "images/tomato.png?v=17", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 }
+            { name: "Мыльный пузырь", src: "images/1soap_bubble.png", color: ["#a5f3fc", "#fbcfe8", "#ffffff"], freq: 850 },
+            { name: "Легкий одуванчик", src: "images/2dandelion.png", color: ["#ffffff", "#fef08a", "#4ade80"], freq: 800 },
+            { name: "Картофельный чипс", src: "images/3chip.png", color: ["#fef08a", "#f59e0b", "#fbbf24"], freq: 750 },
+            { name: "Куриное яйцо", src: "images/4egg.png", color: ["#ffffff", "#fef08a", "#f59e0b"], freq: 520 },
+            { name: "Спелый томат", src: "images/5tomato.png", color: ["#ef4444", "#dc2626", "#84cc16"], freq: 440 },
+            { name: "Спелый банан", src: "images/6ripe_banana.png", color: ["#fef08a", "#eab308", "#16a34a"], freq: 400 },
+            { name: "Стеклянный шар", src: "images/7hand-blown.png", color: ["#ffffff", "#9ca3af", "#e5e7eb"], freq: 650 },
+            { name: "Лампочка", src: "images/8light_bulb.png", color: ["#ffffff", "#fef08a", "#d1d5db"], freq: 700 },
+            { name: "Плитка шоколада", src: "images/9milk_chocolate.png", color: ["#78350f", "#92400e", "#b45309"], freq: 450 },
+            { name: "Хрустящее печенье", src: "images/10cookie.png", color: ["#d97706", "#b45309", "#92400e"], freq: 500 },
+            { name: "Сочное яблоко", src: "images/11apple.png", color: ["#ef4444", "#22c55e", "#fef08a"], freq: 460 },
+            { name: "Стеклянный бокал", src: "images/12glassgoblet.png", color: ["#ffffff", "#e5e7eb", "#9ca3af"], freq: 750 },
+            { name: "Керамическая кружка", src: "images/13ceramicmug.png", color: ["#f3f4f6", "#d1d5db", "#9ca3af"], freq: 550 },
+            { name: "Стеклянная бутылка", src: "images/14bottle.png", color: ["#22c55e", "#16a34a", "#ffffff"], freq: 650 },
+            { name: "Цветочный горшок", src: "images/15flower_pot.png", color: ["#b45309", "#d97706", "#92400e"], freq: 350 },
+            { name: "Трехлитровая банка", src: "images/16glass3liter.png", color: ["#ffffff", "#e5e7eb", "#a7f3d0"], freq: 500 }
         ];
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -296,8 +303,8 @@
                 p.style.height = `${size}px`;
                 
                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.left = '38%'; // Центр взрыва теперь совпадает с предметом
-                p.style.bottom = '110px';
+                p.style.left = '43%'; 
+                p.style.bottom = '130px'; 
                 stage.appendChild(p);
 
                 const angle = Math.random() * Math.PI * 2;
